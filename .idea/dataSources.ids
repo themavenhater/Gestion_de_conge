@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="Sqlite (Xerial) - mobilis.sqlite" uuid="09d86fc5-814c-4c56-8ff8-2478af5408c6">
+    <database-info product="SQLite" version="3.8.11" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
+    <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
+    <schema name="" catalog=""/>
+    <table name="employes" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="nom" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="prenom" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="fonction" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12" def="J251bGwn"/>
+      <column name="date_recrutement" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="nb_conge" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="nb_jours_recupere" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="structure_actuelle" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <primary-key columns="id"/>
+      <exported-key name="#FAKE_info_congé_1" table="info_congé" schema="" catalog="" columns="id_employé"/>
+      <exported-key name="#FAKE_info_sortie_1" table="info_sortie" schema="" catalog="" columns="id_employe"/>
+    </table>
+    <table name="id_struct" schema="" catalog="" type="TABLE">
+      <column name="id_changement_struct" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="date_changement" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="id_employe" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="type_structure" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <primary-key columns="id_changement_struct"/>
+      <foreign-key name="#FAKE_id_struct_1" columns="id_employe,type_structure" ref-table="struct_info" ref-schema="" ref-catalog="" ref-columns="id,id_structure" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="info_congé" schema="" catalog="" type="TABLE">
+      <column name="id_conge" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="id_employé" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="debut" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="fin" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="lieu_de_juissance" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="id_intérimaire" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <primary-key columns="id_conge"/>
+      <foreign-key name="#FAKE_info_congé_1" columns="id_employé" ref-table="employes" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="info_sortie" schema="" catalog="" type="TABLE">
+      <column name="id_sortie" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="type" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="affectation" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="Desire" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="motif" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="date_sortie" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="id_employe" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <primary-key columns="id_sortie"/>
+      <foreign-key name="#FAKE_info_sortie_1" columns="id_employe" ref-table="employes" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
+      <column name="name" sqlType="" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="seq" sqlType="" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="struct_info" schema="" catalog="" type="TABLE">
+      <column name="id_structure" sqlType="INT" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="type_struct" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <primary-key columns="id_structure"/>
+      <exported-key name="#FAKE_id_struct_1" table="id_struct" schema="" catalog="" columns="id_employe,type_structure"/>
+    </table>
+  </data-source>
+</component>
