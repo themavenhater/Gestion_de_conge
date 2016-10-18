@@ -1,19 +1,19 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.time.LocalDate;
-
-import static java.time.LocalDate.*;
 
 
 /**
@@ -22,15 +22,21 @@ import static java.time.LocalDate.*;
 
 public class sample extends Application {
 
+    public static ObservableList<Person> data = FXCollections.observableArrayList();
+    public TableView table = new TableView();
     Stage window;
     Scene intro_scene;
     BorderPane pane;
     GridPane login_pane,conge_pane,absrc_pane;
     FlowPane flow;
     VBox intro,info_pane,modif_pane,demand_pane;
-    Button login,info,modifier,demande,rc,absence,congé,sortie,retour,retour_demande,retour_modif,retour_info,retout_abssort,confirm_congé,confirm_absrc;
+    Button login, info, modifier, demande, rc, absence, congé, show_employe, show_conge, sortie,
+            retour, retour_demande, retour_info_employé, retout_abssort, confirm_congé, confirm_absrc,
+            info_rc, info_sortie, info_abs, info_conge;
     Label title ;
+    ListView list_rc, list_conge, list_abs, list_sortie;
     ComboBox<String> names,interim;
+    TableColumn id, nom, prenom, fonction, date_recrutement, nb_congé, structureacc;
 
     public static void main(String[] args){
         launch(args);
@@ -63,7 +69,16 @@ public class sample extends Application {
         sortie= new Button("sortie");
         sortie.setStyle("-fx-font: 18 arial; -fx-base: #2d46ee;");
         retour = new Button("<<----");
-        retour.setStyle("-fx-font: 18 arial; -fx-base: #ecee0f;");retour.setMaxSize(200,100);
+        retour.setStyle("-fx-font: 18 arial; -fx-base: #ecee0f;");
+        retour.setMaxSize(200, 100);
+        show_conge = new Button("info congé");
+        show_conge.setStyle("-fx-font: 18 arial; -fx-base: #2d46ee;");
+        show_employe = new Button("info employé");
+        show_employe.setStyle("-fx-font: 18 arial; -fx-base: #2d46ee;");
+        retour_info_employé = new Button("<--");
+        retour_info_employé.setStyle("-fx-font: 18 arial; -fx-base: #ecee0f;");
+        retour_info_employé.setMaxSize(200, 100);
+
 
         //Login pane ===================================================================================================
         login_pane = new GridPane();
@@ -126,7 +141,7 @@ public class sample extends Application {
         retour_demande.setStyle("-fx-font: 18 arial; -fx-base: #2d46ee;");
         conge_pane.add(retour_demande,1,35);
 
-        //sortie_absence================================================================================================
+        //absrc_pane================================================================================================
         absrc_pane=new GridPane();
         setPane(absrc_pane);
         Text date = new Text("Date :");
@@ -150,9 +165,33 @@ public class sample extends Application {
         retout_abssort = new Button("Retour");
         retout_abssort.setStyle("-fx-font: 18 arial; -fx-base: #2d46ee;");
         absrc_pane.add(retout_abssort,1,35);
-        // date_abs_sort motiftxt desiretxt
+        Text erreur2 = new Text("date érroné");
+        erreur2.setStyle("-fx-font: 18 arial; -fx-background-color: #5245ee;");
 
 
+        //TableView=====================================================================================================
+        //epoloyes==========================================
+        table.setMinSize(750, 550);
+        id = new TableColumn("ID");
+        nom = new TableColumn("Nom");
+        prenom = new TableColumn("Prénom");
+        date_recrutement = new TableColumn("date");
+        fonction = new TableColumn("fonction");
+        nb_congé = new TableColumn("nombre de congé");
+        structureacc = new TableColumn("structure Actuelle");
+
+        create_column(id, "ID", 30, 40);
+        id.setSortType(TableColumn.SortType.ASCENDING);
+        create_column(nom, "nom", 100, 120);
+        create_column(prenom, "Prénom", 100, 120);
+        create_column(fonction, "Fonction", 150, 150);
+        create_column(date_recrutement, "Date de recrutement", 100, 110);
+        create_column(nb_congé, "congé", 80, 40);
+        create_column(structureacc, "Structure actuelle", 100, 150);
+
+        table.getColumns().addAll(id, nom, prenom, fonction, date_recrutement, nb_congé, structureacc);
+        StockedProcedure.info_employé();
+        table.setItems(data);
 
 
         // VBOXes ======================================================================================================
@@ -163,8 +202,10 @@ public class sample extends Application {
         demande.setMaxSize(200,100);
         modifier.setMaxSize(200,100);
         //information Vbox==================================
-        info_pane = new VBox(20);
+        info_pane = new VBox(20, show_employe, show_conge, retour);
         info_pane.setPadding(new Insets(100, 100, 100, 100));
+        show_employe.setMaxSize(200, 100);
+        show_conge.setMaxSize(200, 100);
         //modifier Vbox ====================================
         modif_pane = new VBox(20);
         modif_pane.setPadding(new Insets(100, 100, 100, 100));
@@ -188,6 +229,7 @@ public class sample extends Application {
         pane.setTop(flow);
         //pane.setCenter(intro);
 
+
         intro_scene = new Scene(pane,1200,650);
         window.setTitle("Title Here");
         window.setOnCloseRequest(e -> {e.consume(); closeProgram();});
@@ -199,70 +241,119 @@ public class sample extends Application {
         login.setOnAction(e-> pane.setCenter(intro));
         demande.setOnAction(e-> {delete(demand_pane);demand_pane.getChildren().addAll(retour);});
         retour.setOnAction(e-> delete(intro));
-        info.setOnAction(e-> { delete(info_pane);info_pane.getChildren().addAll(retour);});
+        info.setOnAction(e -> {
+            delete(info_pane);
+            info_pane.getChildren().addAll(retour);
+        });
         modifier.setOnAction(e-> {delete(modif_pane);modif_pane.getChildren().addAll(retour);});
+
         confirm_congé.setOnAction(e->
         {
+            System.out.println();
            conge_pane.getChildren().removeAll(erreur);
-            if (names.getValue()==null ||datePicker.getValue()==null ||
-                datePicker2.getValue()==null||lieujuis.getText()==null || interim.getValue()==null){
-                conge_pane.add(erreur,1,24);}
-            else {  String information_congé = names.getValue()+" "+datePicker.getValue()+" " +
-                datePicker2.getValue()+" "+lieujuis.getText()+" "+interim.getValue();
-            System.out.println(information_congé);
-            setinformation_congé(information_congé);}
+            if (names.getValue() == null || lieujuis.getText() == null) {
+                if (datePicker.getValue() == null || datePicker2.getValue() == null) conge_pane.add(erreur2, 1, 25);
+                System.out.println("ifififif");
+                conge_pane.add(erreur, 1, 24);
+            } else {
+                String information_congé = names.getValue() + " " + datePicker.getValue() + " " +
+                        datePicker2.getValue() + " " + lieujuis.getText() + " " + interim.getValue();
+                System.out.println(information_congé);
+                setinformation(information_congé, 1);
+                names.setValue(null);
+                datePicker.setValue(null);
+                datePicker2.setValue(null);
+                interim.setValue(null);
+                lieujuis.setText(null);
+            }
         });
-        congé.setOnAction(e-> {pane.setRight(conge_pane) ; demand_pane.setMouseTransparent(true);     });
-        retour_demande.setOnAction(e-> { pane.setRight(null);demand_pane.setMouseTransparent(false);  });
-        absence.setOnAction(e->{pane.setRight(absrc_pane) ; demand_pane.setMouseTransparent(true);    });
-
         confirm_absrc.setOnAction(e->
         {
-
+            System.out.println(names.getValue());
             absrc_pane.getChildren().removeAll(erreur);
-            if (names.getValue()!=null&&date_abs_sort.getValue()!=null && motiftxt.getText()!=null && desiretxt.getText()!=null)
+            absrc_pane.getChildren().removeAll(erreur2);
+            if (names.getValue() == null || desiretxt.getText() == null || motiftxt.getText() == null) {
+                absrc_pane.add(erreur, 1, 20);
+                if (date_abs_sort.getValue() == null) absrc_pane.add(erreur2, 1, 20);
+                date_abs_sort.setValue(null);
+            } else
             {
-                String information_abs_sortie =names.getValue()+"."+date_abs_sort.getValue()+"."+motiftxt.getText()+"."+desiretxt.getText();
-                //setinformation_abs_sort(information_abs_sortie,1);
+                String information_congé2 = names.getValue() + " " + desiretxt.getText() + " " + motiftxt.getText() + " " + date_abs_sort.getValue();
+                System.out.println(information_congé2);
+                setinformation(information_congé2, 2);
+                absrc_pane.getChildren().remove(erreur2);
+                names.setValue(null);
+                desiretxt.setText(null);
+                motiftxt.setText(null);
+                date_abs_sort.setValue(null);
             }
-            else if (names.getValue()==""||date_abs_sort.getValue()==(LocalDate.parse("")) || motiftxt.getText()=="" || desiretxt.getText()==""){
-                names.getEditor().clear();
-                date_abs_sort.getEditor().clear();
-                motiftxt.clear();
-                desiretxt.clear();
-                absrc_pane.add(erreur,1,24);
 
-            }
         });
 
+        congé.setOnAction(e -> {
+            pane.setRight(conge_pane);
+            demand_pane.setMouseTransparent(true);
+        });
+        retour_demande.setOnAction(e ->
+        {
+            conge_pane.getChildren().remove(erreur);
+            names.setValue(null);
+            datePicker.setValue(null);
+            datePicker2.setValue(null);
+            interim.setValue(null);
+            lieujuis.setText(null);
+            pane.setRight(null);
+            demand_pane.setMouseTransparent(false);
+
+        });
+
+        absence.setOnAction(e -> {
+            pane.setRight(absrc_pane);
+            demand_pane.setMouseTransparent(true);
+        });
+        retout_abssort.setOnAction(e ->
+        {
+            names.setValue(null);
+            desiretxt.setText(null);
+            motiftxt.setText(null);
+            date_abs_sort.setValue(null);
+            pane.setRight(null);
+            demand_pane.setMouseTransparent(false);
+        });
+        show_employe.setOnAction(e -> {
+            info_pane.setMouseTransparent(true);
+            pane.setCenter(table);
+            flow.getChildren().add(retour_info_employé);
+        });
+        retour_info_employé.setOnAction(e -> {
+            flow.getChildren().remove(retour_info_employé);
+            pane.setCenter(null);
+            pane.setLeft(null);
+            pane.setCenter(info_pane);
+            pane.setLeft(login_pane);
+            info_pane.setMouseTransparent(false);
+        });
     }
 
-    private void setinformation_congé(String inform){
+
+    private void setinformation(String inform, int type) {
         String[] splited = inform.split("\\s+");
-        int id_employé=Integer.parseInt(splited[0]);
+        /*int id_employé=Integer.valueOf(splited[0]);
+        System.out.println(id_employé);
         String nom = splited[1];
         String prenom =splited[2];
-        String début= splited[3];
-        String fin = splited[4];
-        String liue =splited[5];
+        String début= ;
+        String fin =
+        String liue =;
         int id_intérimaire = Integer.parseInt(splited[6]);
-
-        StockedProcedure.addcongé(début,fin,liue,id_intérimaire,id_employé);
-    }
-
-    private void setinformation_abs_sort(String inform,int type)
-    {
-        String[] splited = inform.split("\\.");
-        String[] nomprenom= splited[0].split("\\s+");
-        int id_employé=Integer.parseInt(nomprenom[0]);
-        String nom = nomprenom[1];
-        String prenom =nomprenom[2];
-        String date = splited[1];
-        String motif = splited[2];
-        String desire = splited[3];
-        //StockedProcedure.add_abs_sort(id_employé,1,);
+        */
+        if (type == 1)
+            StockedProcedure.addcongé(splited[3], splited[4], splited[5], Integer.parseInt(splited[6]), Integer.valueOf(splited[0]));
+        if (type == 2)
+            StockedProcedure.add_abs_sort(Integer.parseInt(splited[0]), type, splited[3], splited[4], splited[5]);
 
     }
+
 
 
     private void delete(Node kk){
@@ -272,7 +363,6 @@ public class sample extends Application {
         info_pane.getChildren().remove(retour);
         modif_pane.getChildren().remove(retour);
     }
-
     private void closeProgram() {
         Boolean answer = ConfirmBox.display("stupid title", " exit ?");
         System.out.println(answer);
@@ -280,9 +370,6 @@ public class sample extends Application {
             window.close();
         }
     }
-
-    private void deleteinfo(){}
-
     private void setPane(GridPane pane){
 
         pane.setStyle("-fx-background-color: #d86f44;");
@@ -299,4 +386,90 @@ public class sample extends Application {
         StockedProcedure.nomprenom(names);
     }
 
+    private void create_column(TableColumn nom_column, String nom, int size, int size2) {
+        nom_column.setMinWidth(size);
+        nom_column.setMaxWidth(size2);
+        nom_column.setCellValueFactory(new PropertyValueFactory<>(nom));
+    }
+
+    public static class Person {
+
+        private final SimpleStringProperty id;
+        private final SimpleStringProperty nom;
+        private final SimpleStringProperty prenom;
+        private final SimpleStringProperty fonction;
+        private final SimpleStringProperty date;
+        private final SimpleStringProperty structureacc;
+        private final SimpleStringProperty nb_congé;
+
+        public Person(int id_id, String fName, String lName, String fonc, String datee, String struct, int nb) {
+            this.id = new SimpleStringProperty(String.valueOf(id_id));
+            this.nom = new SimpleStringProperty(fName);
+            this.prenom = new SimpleStringProperty(lName);
+            this.fonction = new SimpleStringProperty(fonc);
+            this.date = new SimpleStringProperty(datee);
+            this.structureacc = new SimpleStringProperty(struct);
+            this.nb_congé = new SimpleStringProperty(String.valueOf(nb));
+
+        }
+
+
+        public String getID() {
+            return id.get();
+        }
+
+        public void setID(int id_id) {
+            id.set(String.valueOf(id_id));
+        }
+
+
+        public String getNom() {
+            return nom.get();
+        }
+
+        public void setNom(String fName) {
+            nom.set(fName);
+        }
+
+        public String getPrénom() {
+            return prenom.get();
+        }
+
+        public void setPrénom(String lName) {
+            prenom.set(lName);
+        }
+
+        public String getFonction() {
+            return fonction.get();
+        }
+
+        public void setFonction(String fonc) {
+            fonction.set(fonc);
+        }
+
+        public String getdate() {
+            return date.get();
+        }
+
+        public void setdate(String datee) {
+            date.set(datee);
+        }
+
+        public String getStructureacc() {
+            return structureacc.get();
+        }
+
+        public void setStructureacc(String struct) {
+            structureacc.set(struct);
+        }
+
+        public String getNb_congé() {
+            return nb_congé.get();
+        }
+
+        public void setNb_congé(int nb) {
+            nb_congé.set(String.valueOf(nb));
+        }
+    }
 }
+

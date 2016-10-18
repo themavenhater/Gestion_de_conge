@@ -6,11 +6,10 @@ package sample;
 public class test {
     public static void main(String[] args)
     {
-        String ss = "sfsfiergferger.zef.zefzef/ergezrgze/ezrgerg efozpejf .. zefzepjf // zefpzejf";
-        String[] splited = ss.split("\\.");
-        for (int i = 0; i<splited.length;i++)
-        {
-            System.out.println(splited[i]);
-        }
+        String ss = "1..moh..krakra..20";
+        String[] splited = ss.split("\\..");
+        int id = Integer.parseInt(splited[0]);
+        System.out.println(id);
+        System.out.println(splited[1]);
     }
 }
