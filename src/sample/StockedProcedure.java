@@ -46,7 +46,7 @@ public class StockedProcedure {
         new ComboBoxAutoComplete<>(kk);
     }
 
-    public static void addcongé(String debut, String fini, String lieu, int id_intérime, int id_employé) {
+    public static void addcongé(String nom, String prenom, String debut, String fini, String lieu, int id_employé, int id_interim) {
         c = null;
         stmt = null;
         try {
@@ -54,6 +54,13 @@ public class StockedProcedure {
             // create a connection to the database
             c = DriverManager.getConnection(url);
             stmt = c.createStatement();
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM employes WHERE id=" + id_employé + ";");
+
+            String fonction = rs.getString(4);
+            String date_recru = rs.getString(5);
+            String struct = rs.getString(8);
+            replace.replace_info(1, nom, prenom, date_recru, fonction, struct, debut, fini, lieu);
 
             PreparedStatement prep = c.prepareStatement(
                     "INSERT INTO info_congé (id_employé,debut,fin, lieu_de_juissance, id_intérimaire)\n" +
@@ -63,7 +70,7 @@ public class StockedProcedure {
             prep.setString(2, debut);
             prep.setString(3, fini);
             prep.setString(4, lieu);
-            prep.setInt(5, id_intérime);
+            prep.setInt(5, id_interim);
             prep.execute();
             stmt.close();
             c.close();
@@ -201,5 +208,42 @@ public class StockedProcedure {
         }
     }
 
+    public static void add_rc(String nom, String prenom, String debut, String fini, int id_employé, String motif) {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            // create a connection to the database
+
+            c = DriverManager.getConnection(url);
+
+            stmt = c.createStatement();
+
+
+            ResultSet rs = stmt.executeQuery("SELECT * FROM employes WHERE id=" + id_employé + ";");
+
+            String fonction = rs.getString(4);
+            String date_recru = rs.getString(5);
+            String struct = rs.getString(8);
+            replace.replace_info(3, nom, prenom, date_recru, fonction, struct, debut, fini, motif);
+
+            PreparedStatement prep = c.prepareStatement(
+                    "INSERT INTO info_rc (du,au,motif_rc, id_employé)\n" +
+                            "VALUES (?,?,?,?);");
+
+            prep.setString(1, debut);
+            prep.setString(2, fini);
+            prep.setString(3, motif);
+            prep.setInt(4, id_employé);
+            prep.execute();
+            stmt.close();
+            c.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
 }
+
 

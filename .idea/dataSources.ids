@@ -15,8 +15,6 @@
       <column name="structure_actuelle" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
       <primary-key columns="id"/>
       <exported-key name="#FAKE_info_congé_1" table="info_congé" schema="" catalog="" columns="id_employé"/>
-      <exported-key name="#FAKE_info_congé_1" table="info_congé" schema="" catalog="" columns="id_employé"/>
-      <exported-key name="#FAKE_info_congé_1" table="info_congé" schema="" catalog="" columns="id_employé"/>
     </table>
     <table name="id_struct" schema="" catalog="" type="TABLE">
       <column name="id_changement_struct" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
@@ -36,6 +34,15 @@
       <primary-key columns="id_conge"/>
       <foreign-key name="#FAKE_info_congé_1" columns="id_employé" ref-table="employes" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
     </table>
+    <table name="info_rc" schema="" catalog="" type="TABLE">
+      <column name="id_rc" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <column name="du" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="au" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="motif_rc" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
+      <column name="id_employé" sqlType="INTEGER" precision="0" scale="-1" nullable="false" jdbcType="4"/>
+      <primary-key columns="id_rc"/>
+      <foreign-key name="#FAKE_info_rc_1" columns="id_employé" ref-table="employes" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
     <table name="info_sortie" schema="" catalog="" type="TABLE">
       <column name="id_sortie" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
       <column name="type" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
@@ -53,8 +60,6 @@
       <column name="id_structure" sqlType="INT" precision="0" scale="-1" nullable="false" jdbcType="4"/>
       <column name="type_struct" sqlType="TEXT" precision="0" scale="-1" nullable="false" jdbcType="12"/>
       <primary-key columns="id_structure"/>
-      <exported-key name="#FAKE_id_struct_1" table="id_struct" schema="" catalog="" columns="id_employe,type_structure"/>
-      <exported-key name="#FAKE_id_struct_1" table="id_struct" schema="" catalog="" columns="id_employe,type_structure"/>
       <exported-key name="#FAKE_id_struct_1" table="id_struct" schema="" catalog="" columns="id_employe,type_structure"/>
     </table>
   </data-source>
