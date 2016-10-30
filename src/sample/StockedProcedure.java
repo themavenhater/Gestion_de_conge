@@ -22,7 +22,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
             // create a connection to the database
             c = DriverManager.getConnection(url);
 
@@ -50,7 +50,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
             // create a connection to the database
             c = DriverManager.getConnection(url);
             stmt = c.createStatement();
@@ -87,7 +87,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
             // create a connection to the database
             c = DriverManager.getConnection(url);
             stmt = c.createStatement();
@@ -124,7 +124,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite ";
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
             // create a connection to the database
             c = DriverManager.getConnection(url);
 
@@ -140,10 +140,7 @@ public class StockedProcedure {
                 String date_recru = rs.getString(5);
                 int nb_conge = rs.getInt(6);
                 String struct = rs.getString(8);
-                //listedesemploye.addrows(id,nom,prenom,fonction,date_recru,nb_conge,struct);
-                //listedesemploye.data.add(new listedesemploye.Person(id,nom,prenom,fonction,date_recru,struct,nb_conge)) ;
                 sample.data.add(new sample.Person(id, nom, prenom, fonction, date_recru, struct, nb_conge));
-
             }
             rs.close();
             stmt.close();
@@ -158,11 +155,135 @@ public class StockedProcedure {
 
     }
 
+    public static void info_rc() {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM info_rc ;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt(1);
+                String du = rs.getString(2);
+                String au = rs.getString(3);
+                String motif = rs.getString(4);
+                int id_emoloi = rs.getInt(5);
+
+                sample.rc_data.add(new sample.rc_Person(id, du, au, motif, id_emoloi));
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void info_abs() {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM info_sortie ;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt(1);
+                int type = rs.getInt(2);
+                String desire = rs.getString(3);
+                String motif = rs.getString(4);
+                String date = rs.getString(5);
+                int id_emoloi = rs.getInt(6);
+                sample.abs_data.add(new sample.abs_Person(id, type, desire, motif, date, id_emoloi));
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void info_cong() {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite";
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM info_congé ;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt(1);
+                int id_emp = rs.getInt(2);
+                String debut = rs.getString(3);
+                String fin = rs.getString(4);
+                String lieu = rs.getString(5);
+                int id_inter = rs.getInt(6);
+                sample.cong_data.add(new sample.cong_Person(id, id_emp, debut, fin, lieu, id_inter));
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void modify_emploi(int id, String sd) {
+
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+            stmt = c.createStatement();
+            PreparedStatement prep = null;
+
+            prep = c.prepareStatement(
+                    "UPDATE employes SET structure_actuelle=? WHERE id=?;");
+            prep.setString(1, sd);
+            prep.setInt(2, id);
+            prep.execute();
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static void add_employé(String nom, String prenom, String fonction, String date_recru, String struct) {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite"; //C:\Users\amine\Documents\mobilis.sqlite
             // create a connection to the database
             c = DriverManager.getConnection(url);
             stmt = c.createStatement();
@@ -190,7 +311,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite"; //C:\Users\amine\Documents\mobilis.sqlite
             // create a connection to the database
             c = DriverManager.getConnection(url);
             stmt = c.createStatement();
@@ -212,7 +333,7 @@ public class StockedProcedure {
         c = null;
         stmt = null;
         try {
-            String url = "jdbc:sqlite:C:/Users/amine/Documents/mobilis.sqlite "; //C:\Users\amine\Documents\mobilis.sqlite
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite"; //C:\Users\amine\Documents\mobilis.sqlite
             // create a connection to the database
 
             c = DriverManager.getConnection(url);
@@ -243,6 +364,61 @@ public class StockedProcedure {
             e.printStackTrace();
         }
 
+    }
+
+    public static void change_struct(int id, String sd) {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite"; //C:\Users\amine\Documents\mobilis.sqlite
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+            stmt = c.createStatement();
+
+            PreparedStatement prep = null;
+            prep = c.prepareStatement(
+                    "INSERT INTO id_struct (date_changement,id_employe,type_structure) VALUES (?,?,?)");
+            prep.setString(1, df.format(dateobj));
+            prep.setInt(2, id);
+            prep.setString(3, sd);
+            prep.execute();
+            stmt.close();
+            c.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void info_struct() {
+        c = null;
+        stmt = null;
+        try {
+            String url = "jdbc:sqlite:stagiaire/mobilis.sqlite ";
+            // create a connection to the database
+            c = DriverManager.getConnection(url);
+
+            stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM id_struct ;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt(1); //+"  "+rs.getString("nom")+" "+rs.getString("prenom");
+                String date_chang = rs.getString(2);
+                int id_empl = rs.getInt(3);
+                String type_struct = rs.getString(4);
+                sample.struct_data.add(new sample.struc_Person(id, date_chang, id_empl, type_struct));
+            }
+            rs.close();
+            stmt.close();
+            c.close();
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
 

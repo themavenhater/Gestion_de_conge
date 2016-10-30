@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="627454072">
+  <component name="DataSourceManagerImpl" format="xml" hash="1256873873">
     <data-source source="LOCAL" name="Sqlite (Xerial) - mobilis.sqlite" uuid="09d86fc5-814c-4c56-8ff8-2478af5408c6">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\amine\Documents\mobilis.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/stagiaire/mobilis.sqlite</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Sqlite (Xerial) - mobilis2.sqlite" uuid="777a9cdd-7ab8-417a-97a9-1b8b92a69bc4">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/Desktop/mobilis2.sqlite</jdbc-url>
     </data-source>
   </component>
 </project>
